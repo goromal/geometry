@@ -55,9 +55,8 @@ PYBIND11_MODULE(geometry, m)
     .def_static("Exp", &SO3d::Exp)
     .def("__repr__",
       [](const SO3d &q) {
-        std::stringstream ss;
-        ss << q;
-        return ss.str();
+        return "SO(3): [ " + std::to_string(q.w()) + ", " + std::to_string(q.x()) +
+          "i, " + std::to_string(q.y()) + "j, " + std::to_string(q.z()) + "k]";
       }
     );
     
@@ -88,10 +87,10 @@ PYBIND11_MODULE(geometry, m)
     .def_static("exp", &SE3d::exp)
     .def_static("Exp", &SE3d::Exp)
     .def("__repr__",
-      [](const SE3d &q) {
-        std::stringstream ss;
-        ss << q;
-        return ss.str();
+      [](const SE3d &x) {
+        return "SE(3): [ " + std::to_string(x.t_.x()) + "i, " + std::to_string(x.t_.y()) + "j, " +
+          std::to_string(x.t_.z()) + "k] [ " + std::to_string(x.q_.w()) + ", " + std::to_string(x.q_.x()) +
+          "i, " + std::to_string(x.q_.y()) + "j, " + std::to_string(x.q_.z()) + "k]";
       }
     );
 }
