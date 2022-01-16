@@ -25,14 +25,10 @@ PYBIND11_MODULE(geometry, m)
     .def(py::init())
     .def(py::init<const Ref<const Matrix<double,4,1>>>())
     .def(py::init<const SO3d &>())
-    .def("w", &SO3d::w)
-    .def("x", &SO3d::x)
-    .def("y", &SO3d::y)
-    .def("z", &SO3d::z)
-    .def("setW", &SO3d::setW)
-    .def("setX", &SO3d::setX)
-    .def("setY", &SO3d::setY)
-    .def("setZ", &SO3d::setZ)
+    .def("w", static_cast<double& (SO3d::*)(void)>(&SO3d::w), "Write access to w.")
+    .def("x", static_cast<double& (SO3d::*)(void)>(&SO3d::x), "Write access to x.")
+    .def("y", static_cast<double& (SO3d::*)(void)>(&SO3d::y), "Write access to y.")
+    .def("z", static_cast<double& (SO3d::*)(void)>(&SO3d::z), "Write access to z.")
     .def("array", &SO3d::array)
     .def("normalize", &SO3d::normalize)
     .def("normalized", &SO3d::normalized)
@@ -71,8 +67,8 @@ PYBIND11_MODULE(geometry, m)
     .def(py::init())
     .def(py::init<const Ref<const Matrix<double,7,1>>>())
     .def(py::init<const SE3d &>())
-    .def("t", &SE3d::t)
-    .def("q", &SE3d::q)
+    .def("t", static_cast<Map<Vector3d>& (SE3d::*)(void)>(&SE3d::t), "Write access to t.")
+    .def("q", static_cast<SO3d& (SE3d::*)(void)>(&SE3d::q), "Write access to q.")
     .def("array", &SE3d::array)
     .def("H", &SE3d::H)
     .def("inverse", &SE3d::inverse)
@@ -89,9 +85,9 @@ PYBIND11_MODULE(geometry, m)
     .def_static("Exp", &SE3d::Exp)
     .def("__repr__",
       [](const SE3d &x) {
-        return "SE(3): [ " + std::to_string(x.t_.x()) + "i, " + std::to_string(x.t_.y()) + "j, " +
-          std::to_string(x.t_.z()) + "k] [ " + std::to_string(x.q_.w()) + ", " + std::to_string(x.q_.x()) +
-          "i, " + std::to_string(x.q_.y()) + "j, " + std::to_string(x.q_.z()) + "k]";
+        return "SE(3): [ " + std::to_string(x.t().x()) + "i, " + std::to_string(x.t().y()) + "j, " +
+          std::to_string(x.t().z()) + "k] [ " + std::to_string(x.q().w()) + ", " + std::to_string(x.q().x()) +
+          "i, " + std::to_string(x.q().y()) + "j, " + std::to_string(x.q().z()) + "k]";
       }
     );
 }
