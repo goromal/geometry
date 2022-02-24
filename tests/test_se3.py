@@ -56,3 +56,13 @@ class TestSE3:
         x.t()[0] = 3
         assert x_arr[0] == 2
         assert x.t()[0] == 3
+    
+    def test_scaling(self):
+        np.random.seed(RSEED)
+        qI = SE3.identity()
+        qIs = 5.0 * qI
+        assert np.allclose(qI.array(), qIs.array())
+        qr = SE3.random()
+        qr2 = qr * 0.2
+        qr3 = qr2 / 0.2
+        assert np.allclose(qr.array(), qr3.array())

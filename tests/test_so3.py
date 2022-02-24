@@ -61,3 +61,13 @@ class TestSO3:
         q_arr[0] = 2
         assert q_arr[0] == 2
         assert q.w() == 1
+
+    def test_scaling(self):
+        np.random.seed(RSEED)
+        qI = SO3.identity()
+        qIs = 5.0 * qI
+        assert np.allclose(qI.array(), qIs.array())
+        qr = SO3.random()
+        qr2 = qr * 0.2
+        qr3 = qr2 / 0.2
+        assert np.allclose(qr.array(), qr3.array())
