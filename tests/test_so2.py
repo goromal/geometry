@@ -37,7 +37,7 @@ class TestSO2:
     def test_chart_maps(self):
         np.random.seed(RSEED)
         q = SO2.random()
-        w = np.random.random(2)
+        w = np.random.random(1)
         qlog = SO2.Log(q)
         q2 = SO2.Exp(qlog)
         assert np.allclose(q.array(), q2.array())
