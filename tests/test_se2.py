@@ -22,7 +22,7 @@ class TestSE2:
     def test_plus_minus(self):
         np.random.seed(RSEED)
         T1 = SE2.random()
-        w = np.random.random(6)
+        w = np.random.random(3)
         T2 = T1 + w
         w2 = T2 - T1
         assert np.allclose(w, w2)
