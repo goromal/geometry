@@ -1,5 +1,6 @@
 #include <SO2.h>
 #include <SO3.h>
+#include <SE2.h>
 #include <SE3.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
@@ -12,7 +13,7 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(geometry, m)
 {
-  m.doc() = "Python binding module for SO2/SO3/SE3.";
+  m.doc() = "Python binding module for SO2, SO3, SE2, and SE3.";
   
   py::class_<SO2d>(m, "SO2")
     .def_static("random", &SO2d::random)
@@ -49,8 +50,7 @@ PYBIND11_MODULE(geometry, m)
     .def_static("Exp", &SO2d::Exp)
     .def("__repr__",
       [](const SO2d &q) {
-        return "SO(2): [ " + std::to_string(q.w()) + ", " + std::to_string(q.x()) +
-          "i ]";
+        return "SO(2): [ " + std::to_string(q.w()) + ", " + std::to_string(q.x()) + "i ]";
       }
     );
   
@@ -98,6 +98,41 @@ PYBIND11_MODULE(geometry, m)
       [](const SO3d &q) {
         return "SO(3): [ " + std::to_string(q.w()) + ", " + std::to_string(q.x()) +
           "i, " + std::to_string(q.y()) + "j, " + std::to_string(q.z()) + "k ]";
+      }
+    );
+    
+  py::class_<SE2d>(m, "SE2")
+    .def_static("random", &SE2d::random)
+    .def_static("identity", &SE2d::identity)
+    .def_static("fromH", &SE2d::fromH)
+    .def_static("fromVecAndRot", static_cast<SE2d (*)(const double, const double, const double, const double)>(&SE2d::fromVecAndRot), "Instantiate SE2 from translation and complex fields")
+    .def_static("fromVecAndRot", static_cast<SE2d (*)(const Matrix<double,2,1> &, const Matrix<double,2,1> &)>(&SE2d::fromVecAndRot), "Instantiate SE2 from a translation vector and vector of complex fields")
+    .def_static("fromVecAndRot", static_cast<SE2d (*)(const Matrix<double,2,1> &, const SO2d &)>(&SE2d::fromVecAndRot), "Instantiate SE2 from a translation vector and SO2 rotation")
+    .def(py::init())
+    .def(py::init<const Ref<const Matrix<double,4,1>>>())
+    .def(py::init<const SE2d &>())
+    .def("t", static_cast<Map<Vector2d>& (SE2d::*)(void)>(&SE2d::t), "Write access to t.")
+    .def("q", static_cast<SO2d& (SE2d::*)(void)>(&SE2d::q), "Write access to q.")
+    .def("array", &SE2d::array)
+    .def("H", &SE2d::H)
+    .def("inverse", &SE2d::inverse)
+    .def("invert", &SE2d::invert)
+    .def(py::self * py::self)
+    .def(py::self * Matrix<double,2,1>())
+    .def(py::self + Matrix<double,3,1>())
+    .def(py::self - py::self)
+    .def(py::self * float())
+    .def(float() * py::self)
+    .def(py::self / float())
+    .def_static("hat", &SE2d::hat)
+    .def_static("vee", &SE2d::vee)
+    .def_static("log", &SE2d::log)
+    .def_static("Log", &SE2d::Log)
+    .def_static("exp", &SE2d::exp)
+    .def_static("Exp", &SE2d::Exp)
+    .def("__repr__",
+      [](const SE2d &x) {
+        return "SE(2): [ " + std::to_string(x.t().x()) + "i, " + std::to_string(x.t().y()) + "j ] [ " + std::to_string(x.q().w()) + ", " + std::to_string(x.q().x()) + "i ]";
       }
     );
     
