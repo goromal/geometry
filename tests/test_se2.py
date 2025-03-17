@@ -63,3 +63,7 @@ class TestSE2:
         qr2 = qr * 0.2
         qr3 = qr2 / 0.2
         assert np.allclose(qr.array(), qr3.array())
+
+    def test_nans(self):
+        qN = SE2.nans()
+        assert np.all(np.isnan(qN.array()))
