@@ -70,3 +70,13 @@ class TestSE3:
     def test_nans(self):
         qN = SE3.nans()
         assert np.all(np.isnan(qN.array()))
+
+    def test_t_keeps_owner_alive(self):
+        np.random.seed(RSEED)
+        T = SE3.random()
+        # t() returns a view into the owning object's memory; the binding must
+        # keep the owner alive while the view is referenced, even when t() is
+        # called on a temporary.
+        t_view = (T * SE3.identity()).t()
+        _ = [np.random.random(64) for _ in range(256)]  # churn the heap
+        assert np.allclose(t_view, T.array()[:3])
